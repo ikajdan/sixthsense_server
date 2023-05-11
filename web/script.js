@@ -1,38 +1,3 @@
-const sidebarLinks = document.querySelectorAll('.card-link');
-const pages = document.querySelectorAll('.page');
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', e => {
-        e.preventDefault();
-        const targetPageId = link.getAttribute('data-href').substring(1);
-        pages.forEach(page => {
-            if (page.id === targetPageId) {
-                page.classList.add('active');
-                // link.classList.add('active');
-            } else {
-                page.classList.remove('active');
-                // link.classList.remove('active');
-            }
-        });
-        sidebarLinks.forEach(l => {
-            if (l.getAttribute('data-href').substring(1) === targetPageId) {
-                l.classList.add('active');
-            } else {
-                l.classList.remove('active');
-            }
-        });
-    });
-});
-
-var aTags = document.querySelectorAll('span[data-href]');
-for (var i = 0; i < aTags.length; i++) {
-    var aTag = aTags[i];
-    aTag.addEventListener('click', function (e) {
-        var ele = e.target;
-        window.location.replace(ele.getAttribute('data-href'));
-    });
-}
-
-// Create initial chart data
 const chartData = {
     labels: [],
     datasets: [
@@ -61,9 +26,8 @@ const chartData = {
     ]
 };
 
-// Create a chart
 let intervalId = null;
-const ctx = document.getElementById('chart').getContext('2d');
+const ctx = document.getElementById('chartCanvas').getContext('2d');
 const chart = new Chart(ctx, {
     type: 'line',
     data: chartData,
@@ -111,6 +75,75 @@ const chart = new Chart(ctx, {
         }
     }
 });
+
+function createLinks() {
+    var s = document.querySelectorAll('span[data-href]');
+    for (var i = 0; i < s.length; i++) {
+        var s = s[i];
+        s.addEventListener('click', function (e) {
+            var t = e.target;
+            window.location.replace(t.getAttribute('data-href'));
+        });
+    }
+}
+
+function setupSidebarLogic() {
+    const sidebarLinks = document.querySelectorAll('.card-link');
+    const pages = document.querySelectorAll('.page');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const targetPageId = link.getAttribute('data-href').substring(1);
+            pages.forEach(page => {
+                if (page.id === targetPageId) {
+                    page.classList.add('active');
+                    // link.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                    // link.classList.remove('active');
+                }
+            });
+            sidebarLinks.forEach(l => {
+                if (l.getAttribute('data-href').substring(1) === targetPageId) {
+                    l.classList.add('active');
+                } else {
+                    l.classList.remove('active');
+                }
+            });
+        });
+    });
+}
+
+function saveSettings() {
+    const hostName = document.getElementById("hostName");
+    localStorage.setItem("hostName", hostName.value);
+
+    const portNumber = document.getElementById("portNumber");
+    localStorage.setItem("portNumber", portNumber.value);
+
+    const refreshTime = document.getElementById("refreshTime");
+    localStorage.setItem("refreshTime", refreshTime.value);
+}
+
+function restoreSettings() {
+    const hostName = document.getElementById("hostName");
+    const hostNamePref = localStorage.getItem("hostName");
+    if (hostNamePref && hostName) {
+        hostName.value = hostNamePref;
+    }
+
+    const portNumber = document.getElementById("portNumber");
+    const portNumberPref = localStorage.getItem("portNumber");
+    if (portNumberPref && portNumber) {
+        portNumber.value = portNumberPref;
+    }
+
+    const refreshTime = document.getElementById("refreshTime");
+    const refreshTimePref = localStorage.getItem("refreshTime");
+    if (refreshTimePref && refreshTime) {
+        refreshTime.value = refreshTimePref;
+    }
+}
 
 function rgbToHex(r, g, b) {
     return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
@@ -226,7 +259,14 @@ function updateChartData() {
 }
 
 window.onload = function () {
-    startUpdating()
+    restoreSettings();
+    var settingsSaveButton = document.getElementById("settingsSaveButton");
+    settingsSaveButton.addEventListener("click", saveSettings, false);
+
+    createLinks();
+    setupSidebarLogic();
+
+    startUpdating();
 
     getLedGrid();
     var refreshButton = document.getElementById("refreshButton");

@@ -22,7 +22,7 @@
         <div id="page1" class="page active">
             <h1>Plots</h1>
             <div class="chart-container">
-                <canvas id="chart"></canvas>
+                <canvas id="chartCanvas"></canvas>
                 <button id="chartPauseButton" type="button">Pause</button>
                 <button id="chartClearButton" type="button">Clear</button>
             </div>
@@ -40,20 +40,17 @@
 
         <div id="page3" class="page">
             <h1>Settings</h1>
-            <div>
-                <form>
-                    <label for="nameInput">Host:</label>
-                    <input type="text" id="nameInput" placeholder="localhost">
+            <div id="settingsForm">
+                <label for="hostName">Host:</label>
+                <input type="text" id="hostName" placeholder="localhost">
 
-                    <label for="emailInput">Port:</label>
-                    <input type="number" id="emailInput" min="0" max="65535" placeholder="8000">
+                <label for="portNumber">Port:</label>
+                <input type="number" id="portNumber" min="0" max="65535" placeholder="8000">
 
-                    <label for="messageInput">Refresh time (ms):</label>
-                    <input type="number" id="messageInput" min="100" max="60000" placeholder="1000">
-
-                    <input type="submit" value="Submit">
-                </form>
+                <label for="refreshTime">Refresh time (ms):</label>
+                <input type="number" id="refreshTime" min="100" max="60000" placeholder="1000">
             </div>
+            <button id="settingsSaveButton" type="button">Save</button>
         </div>
     </div>
 

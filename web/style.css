@@ -32,11 +32,19 @@ h1 {
 label,
 input {
     display: block;
+}
+
+label {
     margin-bottom: 10px;
 }
 
+input {
+    margin-bottom: 30px;
+}
+
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="url"] {
     color: #fff;
     background-color: #333;
     border: 1px solid transparent;
@@ -58,7 +66,8 @@ input[type=number] {
 }
 
 input[type="text"]:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="url"]:focus {
     outline: 2px solid #7c4a7c;
 }
 
@@ -153,7 +162,8 @@ input[type="submit"]:active {
     height: 600px;
 }
 
-#chart {
+#chartCanvas,
+#settingsForm {
     margin-bottom: 35px;
 }
 
