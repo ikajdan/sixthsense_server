@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SixthSense</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="sidebar unselectable">
+        <h1 id="title">SixthSense</h1>
+        <div data-href="#page1" class="card-link active"><span class="material-icons">show_chart</span>Plots</div>
+        <div data-href="#page2" class="card-link"><span class="material-icons">toggle_on</span>Control</div>
+        <div data-href="#page3" class="card-link"><span class="material-icons">settings</span>Settings</div>
+    </div>
+
+    <div class="content center">
+        <div id="page1" class="page active">
+            <h1>Plots</h1>
+            <div class="chart-container">
+                <canvas id="chart"></canvas>
+                <button id="chartPauseButton" type="button">Pause</button>
+                <button id="chartClearButton" type="button">Clear</button>
+            </div>
+        </div>
+
+        <div id="page2" class="page">
+            <h1>LED Control</h1>
+            <div>
+                <div id="ledGrid" class="grid-container"></div>
+                <button id="refreshButton" type="button">Refresh</button>
+                <button id="clearButton" type="button">Clear</button>
+                <button id="applyButton" type="button">Apply</button>
+            </div>
+        </div>
+
+        <div id="page3" class="page">
+            <h1>Settings</h1>
+            <div>
+                <form>
+                    <label for="nameInput">Host:</label>
+                    <input type="text" id="nameInput" placeholder="localhost">
+
+                    <label for="emailInput">Port:</label>
+                    <input type="number" id="emailInput" min="0" max="65535" placeholder="8000">
+
+                    <label for="messageInput">Refresh time (ms):</label>
+                    <input type="number" id="messageInput" min="100" max="60000" placeholder="1000">
+
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
