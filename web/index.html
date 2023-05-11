@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>SixthSense</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -12,10 +13,13 @@
 
 <body>
     <div class="sidebar unselectable">
-        <h1 id="title">SixthSense</h1>
-        <div data-href="#page1" class="card-link active"><span class="material-icons">show_chart</span>Plots</div>
-        <div data-href="#page2" class="card-link"><span class="material-icons">toggle_on</span>Control</div>
-        <div data-href="#page3" class="card-link"><span class="material-icons">settings</span>Settings</div>
+        <div class="sidebar-logo">
+            <img src="favicon.png" alt="Logo">
+            <h1 id="title">SixthSense</h1>
+        </div>
+        <div data-href="#page1" class="sidebar-link active"><span class="material-icons">show_chart</span>Plots</div>
+        <div data-href="#page2" class="sidebar-link"><span class="material-icons">toggle_on</span>Control</div>
+        <div data-href="#page3" class="sidebar-link"><span class="material-icons">settings</span>Settings</div>
     </div>
 
     <div class="content center">
@@ -32,9 +36,9 @@
             <h1>LED Control</h1>
             <div>
                 <div id="ledGrid" class="grid-container"></div>
-                <button id="refreshButton" type="button">Refresh</button>
-                <button id="clearButton" type="button">Clear</button>
-                <button id="applyButton" type="button">Apply</button>
+                <button id="ledRefreshButton">Refresh</button>
+                <button id="ledClearButton">Clear</button>
+                <button id="ledApplyButton">Apply</button>
             </div>
         </div>
 
@@ -42,13 +46,11 @@
             <h1>Settings</h1>
             <div id="settingsForm">
                 <label for="hostName">Host:</label>
-                <input type="text" id="hostName" placeholder="localhost">
-
+                <input type="text" id="settingsHostName" placeholder="localhost">
                 <label for="portNumber">Port:</label>
-                <input type="number" id="portNumber" min="0" max="65535" placeholder="8000">
-
+                <input type="number" id="settingsPortNumber" min="0" max="65535" placeholder="8000">
                 <label for="refreshTime">Refresh time (ms):</label>
-                <input type="number" id="refreshTime" min="100" max="60000" placeholder="1000">
+                <input type="number" id="settingsRefreshTime" min="100" max="60000" placeholder="1000">
             </div>
             <button id="settingsSaveButton" type="button">Save</button>
         </div>

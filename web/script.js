@@ -88,7 +88,7 @@ function createLinks() {
 }
 
 function setupSidebarLogic() {
-    const sidebarLinks = document.querySelectorAll('.card-link');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
     const pages = document.querySelectorAll('.page');
     sidebarLinks.forEach(link => {
         link.addEventListener('click', e => {
@@ -115,30 +115,30 @@ function setupSidebarLogic() {
 }
 
 function saveSettings() {
-    const hostName = document.getElementById("hostName");
+    const hostName = document.getElementById("settingsHostName");
     localStorage.setItem("hostName", hostName.value);
 
-    const portNumber = document.getElementById("portNumber");
+    const portNumber = document.getElementById("settingsPortNumber");
     localStorage.setItem("portNumber", portNumber.value);
 
-    const refreshTime = document.getElementById("refreshTime");
+    const refreshTime = document.getElementById("settingsRefreshTime");
     localStorage.setItem("refreshTime", refreshTime.value);
 }
 
 function restoreSettings() {
-    const hostName = document.getElementById("hostName");
+    const hostName = document.getElementById("settingsHostName");
     const hostNamePref = localStorage.getItem("hostName");
     if (hostNamePref && hostName) {
         hostName.value = hostNamePref;
     }
 
-    const portNumber = document.getElementById("portNumber");
+    const portNumber = document.getElementById("settingsPortNumber");
     const portNumberPref = localStorage.getItem("portNumber");
     if (portNumberPref && portNumber) {
         portNumber.value = portNumberPref;
     }
 
-    const refreshTime = document.getElementById("refreshTime");
+    const refreshTime = document.getElementById("settingsRefreshTime");
     const refreshTimePref = localStorage.getItem("refreshTime");
     if (refreshTimePref && refreshTime) {
         refreshTime.value = refreshTimePref;
@@ -269,10 +269,10 @@ window.onload = function () {
     startUpdating();
 
     getLedGrid();
-    var refreshButton = document.getElementById("refreshButton");
-    refreshButton.addEventListener("click", getLedGrid, false);
-    var clearButton = document.getElementById("clearButton");
-    clearButton.addEventListener("click", resetLedGrid, false);
-    var applyButton = document.getElementById("applyButton");
-    applyButton.addEventListener("click", setLedGrid, false);
+    var ledRefreshButton = document.getElementById("ledRefreshButton");
+    ledRefreshButton.addEventListener("click", getLedGrid, false);
+    var ledClearButton = document.getElementById("ledClearButton");
+    ledClearButton.addEventListener("click", resetLedGrid, false);
+    var ledApplyButton = document.getElementById("ledApplyButton");
+    ledApplyButton.addEventListener("click", setLedGrid, false);
 };
