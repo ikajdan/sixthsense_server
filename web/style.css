@@ -19,21 +19,15 @@ body {
 }
 
 h1 {
-    font-size: 32px;
+    font-size: 1.5em;
     font-weight: 500;
     color: var(--foreground_500);
-    margin-bottom: 40px;
-}
-
-#chartCanvas,
-#ledGrid,
-#settingsForm {
-    margin-bottom: 35px;
+    margin: 1em 0;
 }
 
 /* Buttons */
 button {
-    font-size: 16px;
+    font-size: 0.8em;
     text-align: center;
     color: black;
     background-color: var(--primary_200);
@@ -49,7 +43,7 @@ button:hover {
 }
 
 button:active {
-    background-color: #f7a7c2;
+    background-color: #b16d84;
 }
 
 /* Input fields */
@@ -87,16 +81,6 @@ input::-webkit-inner-spin-button {
     vertical-align: middle;
 }
 
-/* Non-selectable area */
-.unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
 /* Sidebar */
 .sidebar {
     height: 100%;
@@ -104,11 +88,12 @@ input::-webkit-inner-spin-button {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #1a1919;
+    background-color: #1d1d1d;
     padding: 0 20px;
-    border: #131211;
+    border: #131313;
     border-right-width: 1px;
     border-right-style: solid;
+    user-select: none;
 }
 
 .sidebar-logo img,
@@ -118,8 +103,8 @@ input::-webkit-inner-spin-button {
 }
 
 .sidebar-logo img {
-    width: 3em;
-    margin: 0 10px 20px 0;
+    width: 2.5em;
+    margin: 0.5em;
 }
 
 .sidebar-link {
@@ -162,36 +147,69 @@ input::-webkit-inner-spin-button {
     display: block;
 }
 
+.container {
+    background-color: #1d1d1d;
+    padding: 0.5em;
+    border: 1px solid #131313;
+    border-radius: 10px;
+    margin-bottom: 2em;
+}
+
+/* Sensors */
+#sensorsTable {
+    width: 100%;
+}
+
+#sensorsTable th,
+#sensorsTable td {
+    color: var(--foreground_500);
+    padding: 8px;
+}
+
+#sensorsTableHeader td {
+    color: var(--foreground_700);
+    font-weight: bold;
+}
+
 /* Chart */
-.chart-container {
-    height: 600px;
+#chartContainer {
+    height: 500px;
+}
+
+#chartCanvas {
+    padding-top: 0.75em;
 }
 
 /* Grid */
-.grid-container {
+#ledGrid {
     display: grid;
     grid-template-columns: repeat(8, 3em);
     grid-template-rows: repeat(8, 3em);
+    width: 100%;
 }
 
-.grid-item {
+#ledGrid .grid-item {
     width: 3em;
     height: 3em;
     padding: 1px;
-    border: 1px solid var(--background_700);
+    border: 1px solid #131313;
     cursor: pointer;
 }
 
 /* Settings */
-label,
-input {
+#settingsContainer label,
+#settingsContainer input {
     display: block;
 }
 
-label {
+#settingsContainer label {
     margin-bottom: 10px;
 }
 
-input {
+#settingsContainer input {
     margin-bottom: 35px;
+}
+
+#settingsRefreshTime {
+    margin-bottom: 0px;
 }

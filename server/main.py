@@ -129,11 +129,13 @@ async def get_all_sensors(
             if roll > 180:
                 roll = roll - 360
             data_child = {}
+            data_child["name"] = "Roll"
             data_child["value"] = roll
             data_child["unit"] = "°"
             data["roll"] = data_child
         case "rad":
             data_child = {}
+            data_child["name"] = "Roll"
             data_child["value"] = hat.get_orientation_radians()["roll"]
             data_child["unit"] = ""
             data["roll"] = data_child
@@ -144,11 +146,13 @@ async def get_all_sensors(
             if pitch > 180:
                 pitch = pitch - 360
             data_child = {}
+            data_child["name"] = "Pitch"
             data_child["value"] = pitch
             data_child["unit"] = "°"
             data["pitch"] = data_child
         case "rad":
             data_child = {}
+            data_child["name"] = "Pitch"
             data_child["value"] = hat.get_orientation_radians()["pitch"]
             data_child["unit"] = ""
             data["pitch"] = data_child
@@ -159,11 +163,13 @@ async def get_all_sensors(
             if yaw > 180:
                 yaw = yaw - 360
             data_child = {}
+            data_child["name"] = "Yaw"
             data_child["value"] = yaw
             data_child["unit"] = "°"
             data["yaw"] = data_child
         case "rad":
             data_child = {}
+            data_child["name"] = "Yaw"
             data_child["value"] = hat.get_orientation_radians()["yaw"]
             data_child["unit"] = ""
             data["yaw"] = data_child

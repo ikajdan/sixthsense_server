@@ -42,9 +42,11 @@ const chart = new Chart(ctx, {
                         size: 14,
                         family: 'Arial'
                     },
-                    color: '#9E9E9E',
+                    color: '#F2F2F2',
                     usePointStyle: true
-                }
+                },
+                position: "bottom",
+                align: "center"
             }
         },
         scales: {
@@ -147,6 +149,40 @@ function restoreSettings() {
 
 function rgbToHex(r, g, b) {
     return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+}
+
+function getSensorsData() {
+    // Get the table element from the HTML page
+    const sensorsContainer = document.getElementById("sensorsTable");
+
+    // Make a request to the REST API
+    fetch("http://localhost:8000/sensors/all?t=c&p=hpa&h=perc&ro=deg&pi=deg&ya=deg")
+        .then(response => response.json())
+        .then(data => {
+            // Create the table header
+            sensorsContainer.innerHTML = '';
+            const header = sensorsContainer.createTHead();
+            header.setAttribute("id", "sensorsTableHeader");
+            const row = header.insertRow();
+            const nameHeader = row.insertCell();
+            const valueHeader = row.insertCell();
+            const unitHeader = row.insertCell();
+            nameHeader.innerText = "Name";
+            valueHeader.innerText = "Value";
+            unitHeader.innerText = "Unit";
+
+            const body = sensorsContainer.createTBody();
+            for (const key in data) {
+                const row = body.insertRow();
+                const nameCell = row.insertCell();
+                const valueCell = row.insertCell();
+                const unitCell = row.insertCell();
+                nameCell.innerText = data[key].name || key;
+                valueCell.innerText = data[key].value || "N/A";
+                unitCell.innerText = data[key].unit || "";
+            }
+        })
+        .catch(error => console.log(error));
 }
 
 function getLedGrid() {
@@ -265,6 +301,9 @@ window.onload = function () {
 
     createLinks();
     setupSidebarLogic();
+
+    getSensorsData();
+    setInterval(getSensorsData, 100000);
 
     startUpdating();
 
