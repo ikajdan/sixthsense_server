@@ -1,0 +1,10 @@
+[Unit]
+Description=Sense HAT API server
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/main.py
+
+[Install]
+WantedBy=multi-user.target
+
