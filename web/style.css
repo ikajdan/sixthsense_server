@@ -182,10 +182,11 @@ input::-webkit-inner-spin-button {
 
 /* Grid */
 #ledGrid {
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(8, 3em);
     grid-template-rows: repeat(8, 3em);
-    width: 100%;
+    margin-bottom: 1.6em;
 }
 
 #ledGrid .grid-item {
@@ -207,7 +208,7 @@ input::-webkit-inner-spin-button {
 }
 
 #settingsContainer input {
-    margin-bottom: 35px;
+    margin-bottom: 2em;
 }
 
 #settingsRefreshTime {

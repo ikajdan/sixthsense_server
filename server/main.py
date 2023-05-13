@@ -4,9 +4,76 @@ from typing import Annotated
 import uvicorn
 from enum import Enum
 from pydantic import Field
-from sense_emu import SenseHat
+from sense_emu import SenseHat, ACTION_PRESSED, ACTION_HELD, ACTION_RELEASED
 from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
+
+
+hat = SenseHat()
+app = FastAPI()
+
+joy_h_count = 0
+joy_v_count = 0
+joy_c_count = 0
+
+
+def led_to_pos(led):
+    ROW_SIZE = 8
+    x = led % ROW_SIZE
+    y = led // ROW_SIZE
+    return [x, y]
+
+
+def hex_to_rgb(hex):
+    return tuple(int(hex[i : i + 2], 16) for i in (0, 2, 4))
+
+
+def joy_pushed_up(event):
+    if event.action != ACTION_RELEASED:
+        global joy_v_count
+        joy_v_count = joy_v_count + 1
+
+
+def joy_pushed_down(event):
+    if event.action != ACTION_RELEASED:
+        global joy_v_count
+        joy_v_count = joy_v_count - 1
+
+
+def joy_pushed_left(event):
+    if event.action != ACTION_RELEASED:
+        global joy_h_count
+        joy_h_count = joy_h_count - 1
+
+
+def joy_pushed_right(event):
+    if event.action != ACTION_RELEASED:
+        global joy_h_count
+        joy_h_count = joy_h_count + 1
+
+
+def joy_pushed_middle(event):
+    if event.action != ACTION_RELEASED:
+        global joy_c_count
+        joy_c_count = joy_c_count + 1
+
+
+hat.stick.direction_up = joy_pushed_up
+hat.stick.direction_down = joy_pushed_down
+hat.stick.direction_left = joy_pushed_left
+hat.stick.direction_right = joy_pushed_right
+hat.stick.direction_middle = joy_pushed_middle
+
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Sensors(str, Enum):
@@ -34,32 +101,6 @@ class Units:
     class Orientation(str, Enum):
         degrees = "degrees"
         radians = "radians"
-
-
-def led_to_pos(led):
-    ROW_SIZE = 8
-    x = led % ROW_SIZE
-    y = led // ROW_SIZE
-    return [x, y]
-
-
-def hex_to_rgb(hex):
-    return tuple(int(hex[i : i + 2], 16) for i in (0, 2, 4))
-
-
-hat = SenseHat()
-app = FastAPI()
-
-
-origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 @app.get("/")
@@ -92,6 +133,12 @@ async def get_all_sensors(
             data_child["value"] = hat.temperature * 9 / 5 + 32
             data_child["unit"] = " F"
             data["temperature"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Temperature (Pressure Sensor)"
+    data_child["value"] = hat.get_temperature_from_pressure()
+    data_child["unit"] = " °C"
+    data["temperature_pressure"] = data_child
 
     match p:
         case "hpa":
@@ -173,6 +220,84 @@ async def get_all_sensors(
             data_child["value"] = hat.get_orientation_radians()["yaw"]
             data_child["unit"] = ""
             data["yaw"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Compass"
+    data_child["value"] = hat.get_compass()
+    data_child["unit"] = "°"
+    data["compass"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Accelerometer (X)"
+    data_child["value"] = hat.get_accelerometer_raw()["x"] * 9.80665
+    data_child["unit"] = "m/s²"
+    data["accelerometer_x"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Accelerometer (Y)"
+    data_child["value"] = hat.get_accelerometer_raw()["y"] * 9.80665
+    data_child["unit"] = "m/s²"
+    data["accelerometer_y"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Accelerometer (Z)"
+    data_child["value"] = hat.get_accelerometer_raw()["z"] * 9.80665
+    data_child["unit"] = "m/s²"
+    data["accelerometer_z"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Gyroscope (X)"
+    data_child["value"] = hat.get_gyroscope_raw()["x"]
+    data_child["unit"] = "rad/s"
+    data["gyroscope_x"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Gyroscope (Y)"
+    data_child["value"] = hat.get_gyroscope_raw()["y"]
+    data_child["unit"] = "rad/s"
+    data["gyroscope_y"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Gyroscope (Z)"
+    data_child["value"] = hat.get_gyroscope_raw()["z"]
+    data_child["unit"] = "rad/s"
+    data["gyroscope_z"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Magnetometer (X)"
+    data_child["value"] = hat.get_compass_raw()["x"]
+    data_child["unit"] = "μT"
+    data["magnetometer_x"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Magnetometer (Y)"
+    data_child["value"] = hat.get_compass_raw()["y"]
+    data_child["unit"] = "μT"
+    data["magnetometer_y"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Magnetometer (Z)"
+    data_child["value"] = hat.get_compass_raw()["z"]
+    data_child["unit"] = "μT"
+    data["magnetometer_z"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Joystick (H)"
+    data_child["value"] = joy_h_count
+    data_child["unit"] = "-"
+    data["joystick_x"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Joystick (V)"
+    data_child["value"] = joy_v_count
+    data_child["unit"] = "-"
+    data["joystick_y"] = data_child
+
+    data_child = {}
+    data_child["name"] = "Joystick (C)"
+    data_child["value"] = joy_c_count
+    data_child["unit"] = "-"
+    data["joystick_c"] = data_child
 
     return data
 

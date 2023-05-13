@@ -1,22 +1,30 @@
+// Global ID of the timer
+let intervalId = null;
+
+let hostNamePref = localStorage.getItem("hostName") || "localhost";
+let portNumberPref = localStorage.getItem("portNumber") || "8000";
+let refreshTimePref = localStorage.getItem("refreshTime") || 1000;
+let activePagePref = localStorage.getItem("activePage") || 0;
+
 const chartData = {
     labels: [],
     datasets: [
         {
-            label: 'Temperature',
+            label: 'Temperature [°C]  ',
             data: [],
             borderColor: '#F66151',
             backgroundColor: '#F6615150',
             borderWidth: 2,
         },
         {
-            label: 'Pressure',
+            label: 'Pressure [hPa]  ',
             data: [],
             borderColor: '#F8E45C',
             backgroundColor: '#F8E45C50',
             borderWidth: 2,
         },
         {
-            label: 'Humidity',
+            label: 'Humidity [%]  ',
             data: [],
             borderColor: '#62A0EA',
             backgroundColor: '#62A0EA50',
@@ -26,8 +34,7 @@ const chartData = {
     ]
 };
 
-let intervalId = null;
-const ctx = document.getElementById('chartCanvas').getContext('2d');
+const ctx = document.getElementById("chartCanvas").getContext("2d");
 const chart = new Chart(ctx, {
     type: 'line',
     data: chartData,
@@ -78,38 +85,56 @@ const chart = new Chart(ctx, {
     }
 });
 
+function updateAll() {
+    updateSensorsData();
+    updateSensorsPlot();
+}
+
+function startTimer() {
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
+
+    intervalId = setInterval(updateAll, refreshTimePref);
+}
+
 function createLinks() {
-    var s = document.querySelectorAll('span[data-href]');
+    var s = document.querySelectorAll("span[data-href]");
     for (var i = 0; i < s.length; i++) {
         var s = s[i];
-        s.addEventListener('click', function (e) {
+        s.addEventListener("click", function (e) {
             var t = e.target;
-            window.location.replace(t.getAttribute('data-href'));
+            window.location.replace(t.getAttribute("data-href"));
         });
     }
 }
 
 function setupSidebarLogic() {
-    const sidebarLinks = document.querySelectorAll('.sidebar-link');
-    const pages = document.querySelectorAll('.page');
+    const sidebarLinks = document.querySelectorAll(".sidebar-link");
+    const pages = document.querySelectorAll(".page");
+
+    // Restore active page
+    sidebarLinks[activePagePref].classList.add("active");
+    pages[activePagePref].classList.add("active");
+
     sidebarLinks.forEach(link => {
-        link.addEventListener('click', e => {
+        link.addEventListener("click", e => {
             e.preventDefault();
-            const targetPageId = link.getAttribute('data-href').substring(1);
+            const targetPageId = link.getAttribute("data-href").substring(1);
             pages.forEach(page => {
                 if (page.id === targetPageId) {
-                    page.classList.add('active');
-                    // link.classList.add('active');
+                    page.classList.add("active");
+                    const id = targetPageId.replace("page", "");
+                    localStorage.setItem("activePage", id - 1);
                 } else {
-                    page.classList.remove('active');
-                    // link.classList.remove('active');
+                    page.classList.remove("active");
                 }
             });
             sidebarLinks.forEach(l => {
-                if (l.getAttribute('data-href').substring(1) === targetPageId) {
-                    l.classList.add('active');
+                if (l.getAttribute("data-href").substring(1) === targetPageId) {
+                    l.classList.add("active");
                 } else {
-                    l.classList.remove('active');
+                    l.classList.remove("active");
                 }
             });
         });
@@ -119,30 +144,32 @@ function setupSidebarLogic() {
 function saveSettings() {
     const hostName = document.getElementById("settingsHostName");
     localStorage.setItem("hostName", hostName.value);
+    hostNamePref = hostName.value || "localhost";
 
     const portNumber = document.getElementById("settingsPortNumber");
     localStorage.setItem("portNumber", portNumber.value);
+    portNumberPref = portNumber.value || "8000";
 
     const refreshTime = document.getElementById("settingsRefreshTime");
-    localStorage.setItem("refreshTime", refreshTime.value);
+    localStorage.getItem("activePage")
+    refreshTimePref = refreshTime.value || 1000;
+
+    startTimer();
 }
 
 function restoreSettings() {
     const hostName = document.getElementById("settingsHostName");
-    const hostNamePref = localStorage.getItem("hostName");
-    if (hostNamePref && hostName) {
+    if (hostNamePref) {
         hostName.value = hostNamePref;
     }
 
     const portNumber = document.getElementById("settingsPortNumber");
-    const portNumberPref = localStorage.getItem("portNumber");
-    if (portNumberPref && portNumber) {
+    if (portNumberPref) {
         portNumber.value = portNumberPref;
     }
 
     const refreshTime = document.getElementById("settingsRefreshTime");
-    const refreshTimePref = localStorage.getItem("refreshTime");
-    if (refreshTimePref && refreshTime) {
+    if (refreshTimePref) {
         refreshTime.value = refreshTimePref;
     }
 }
@@ -151,16 +178,15 @@ function rgbToHex(r, g, b) {
     return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
 }
 
-function getSensorsData() {
-    // Get the table element from the HTML page
+function updateSensorsData() {
+    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all?t=c&p=hpa&h=perc&ro=deg&pi=deg&ya=deg";
     const sensorsContainer = document.getElementById("sensorsTable");
 
-    // Make a request to the REST API
-    fetch("http://localhost:8000/sensors/all?t=c&p=hpa&h=perc&ro=deg&pi=deg&ya=deg")
+    fetch(apiEndpoint)
         .then(response => response.json())
         .then(data => {
             // Create the table header
-            sensorsContainer.innerHTML = '';
+            sensorsContainer.innerHTML = "";
             const header = sensorsContainer.createTHead();
             header.setAttribute("id", "sensorsTableHeader");
             const row = header.insertRow();
@@ -178,20 +204,45 @@ function getSensorsData() {
                 const valueCell = row.insertCell();
                 const unitCell = row.insertCell();
                 nameCell.innerText = data[key].name || key;
-                valueCell.innerText = data[key].value || "N/A";
-                unitCell.innerText = data[key].unit || "";
+                valueCell.innerText = data[key].value || "0";
+                unitCell.innerText = data[key].unit || "-";
             }
         })
         .catch(error => console.log(error));
 }
 
-function getLedGrid() {
-    const apiEndpoint = 'http://127.0.0.1:8000/leds/get/all';
+function updateSensorsPlot() {
+    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all?t=c&p=hpa&h=perc";
+
     fetch(apiEndpoint)
         .then(response => response.json())
         .then(data => {
-            const container = document.getElementById('ledGrid');
-            container.innerHTML = '';
+            chartData.labels.push(new Date().toLocaleTimeString());
+            chartData.datasets[0].data.push(data.temperature.value);
+            chartData.datasets[1].data.push(data.pressure.value);
+            chartData.datasets[2].data.push(data.humidity.value);
+
+            // Limit chart data points
+            if (chartData.labels.length > 10) {
+                chartData.labels.shift();
+                chartData.datasets[0].data.shift();
+                chartData.datasets[1].data.shift();
+                chartData.datasets[2].data.shift();
+            }
+
+            chart.update();
+        })
+        .catch(error => console.error(error));
+}
+
+function updateLedGrid() {
+    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/leds/get/all";
+
+    fetch(apiEndpoint)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById("ledGrid");
+            container.innerHTML = "";
 
             let id = 0
             data.forEach((color) => {
@@ -224,8 +275,8 @@ function setLedGrid() {
             parseInt(colorValue.substring(5, 7), 16),
         ];
 
-        // Use a gray color if the LED is off
-        if (colorArray === [100, 100, 100]) {
+        // Use a gray color if an LED is off
+        if (colorArray.toString() == [120, 120, 120].toString()) {
             colorArray = [0, 0, 0];
         }
 
@@ -233,7 +284,8 @@ function setLedGrid() {
     }
 
     const colorsJSON = JSON.stringify(colors);
-    const apiEndpoint = 'http://127.0.0.1:8000/leds/set/all?arr=' + colorsJSON;
+    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/leds/set/all?arr=" + colorsJSON;
+
     fetch(apiEndpoint, {
         method: "POST",
         body: colorsJSON,
@@ -252,7 +304,8 @@ function resetLedGrid() {
     }
 
     const colorsJSON = JSON.stringify(colors);
-    const apiEndpoint = 'http://127.0.0.1:8000/leds/set/all?arr=' + colorsJSON;
+    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/leds/set/all?arr=" + colorsJSON;
+
     fetch(apiEndpoint, {
         method: "POST",
         body: colorsJSON,
@@ -261,57 +314,24 @@ function resetLedGrid() {
         }
     });
 
-    getLedGrid();
-}
-
-function startUpdating() {
-    intervalId = setInterval(updateChartData, 1000);
-}
-
-function stopUpdating() {
-    clearInterval(intervalId);
-}
-
-function updateChartData() {
-    fetch('http://127.0.0.1:8000/sensors/all?t=c&p=hpa&h=perc')
-        .then(response => response.json())
-        .then(data => {
-            chartData.labels.push(new Date().toLocaleTimeString());
-            chartData.datasets[0].data.push(data.temperature.value);
-            chartData.datasets[1].data.push(data.pressure.value);
-            chartData.datasets[2].data.push(data.humidity.value);
-
-            // Limit chart data points
-            if (chartData.labels.length > 10) {
-                chartData.labels.shift();
-                chartData.datasets[0].data.shift();
-                chartData.datasets[1].data.shift();
-                chartData.datasets[2].data.shift();
-            }
-
-            chart.update();
-        })
-        .catch(error => console.error(error));
+    updateLedGrid();
 }
 
 window.onload = function () {
     restoreSettings();
-    var settingsSaveButton = document.getElementById("settingsSaveButton");
-    settingsSaveButton.addEventListener("click", saveSettings, false);
-
     createLinks();
     setupSidebarLogic();
+    updateAll();
+    updateLedGrid();
+    startTimer();
 
-    getSensorsData();
-    setInterval(getSensorsData, 100000);
-
-    startUpdating();
-
-    getLedGrid();
     var ledRefreshButton = document.getElementById("ledRefreshButton");
-    ledRefreshButton.addEventListener("click", getLedGrid, false);
+    ledRefreshButton.addEventListener("click", updateLedGrid, false);
     var ledClearButton = document.getElementById("ledClearButton");
     ledClearButton.addEventListener("click", resetLedGrid, false);
     var ledApplyButton = document.getElementById("ledApplyButton");
     ledApplyButton.addEventListener("click", setLedGrid, false);
+
+    var settingsSaveButton = document.getElementById("settingsSaveButton");
+    settingsSaveButton.addEventListener("click", saveSettings, false);
 };

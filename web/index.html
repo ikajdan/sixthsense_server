@@ -17,27 +17,24 @@
             <img src="favicon.png" alt="Logo">
             <h1 id="title">SixthSense</h1>
         </div>
-        <div data-href="#page1" class="sidebar-link active"><span class="material-icons">thermostat</span>Sensors</div>
+        <div data-href="#page1" class="sidebar-link"><span class="material-icons">thermostat</span>Sensors</div>
         <div data-href="#page2" class="sidebar-link"><span class="material-icons">show_chart</span>Plots</div>
         <div data-href="#page3" class="sidebar-link"><span class="material-icons">toggle_on</span>Control</div>
         <div data-href="#page4" class="sidebar-link"><span class="material-icons">settings</span>Settings</div>
     </div>
 
     <div class="content center">
-        <div id="page1" class="page active">
+        <div id="page1" class="page">
             <h1>Sensors</h1>
             <div class="container">
                 <table id="sensorsTable"></table>
             </div>
-            <button id="sensorsPauseButton" type="button">Pause</button>
         </div>
         <div id="page2" class="page">
             <h1>Plots</h1>
             <div id="chartContainer" class="container">
                 <canvas id="chartCanvas"></canvas>
             </div>
-            <button id="chartPauseButton" type="button">Pause</button>
-            <button id="chartClearButton" type="button">Clear</button>
         </div>
 
         <div id="page3" class="page">
@@ -51,9 +48,9 @@
         <div id="page4" class="page">
             <h1>Settings</h1>
             <div id="settingsContainer">
-                <label for="hostName">Host:</label>
+                <label for="hostName">Hostname:</label>
                 <input type="text" id="settingsHostName" placeholder="localhost">
-                <label for="portNumber">Port:</label>
+                <label for="portNumber">Port number:</label>
                 <input type="number" id="settingsPortNumber" min="0" max="65535" placeholder="8000">
                 <label for="refreshTime">Refresh time (ms):</label>
                 <input type="number" id="settingsRefreshTime" min="100" max="60000" placeholder="1000">
