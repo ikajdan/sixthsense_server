@@ -12,6 +12,16 @@ from fastapi.middleware.cors import CORSMiddleware
 hat = SenseHat()
 app = FastAPI()
 
+# TODO: Dev only
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 joy_h_count = 0
 joy_v_count = 0
 joy_c_count = 0
@@ -63,17 +73,6 @@ hat.stick.direction_down = joy_pushed_down
 hat.stick.direction_left = joy_pushed_left
 hat.stick.direction_right = joy_pushed_right
 hat.stick.direction_middle = joy_pushed_middle
-
-
-origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 class Sensors(str, Enum):
@@ -221,11 +220,12 @@ async def get_all_sensors(
             data_child["unit"] = ""
             data["yaw"] = data_child
 
-    data_child = {}
-    data_child["name"] = "Compass"
-    data_child["value"] = hat.get_compass()
-    data_child["unit"] = "°"
-    data["compass"] = data_child
+    # Commented out because it's not working on the emulator
+    # data_child = {}
+    # data_child["name"] = "Compass"
+    # data_child["value"] = hat.get_compass()
+    # data_child["unit"] = "°"
+    # data["compass"] = data_child
 
     data_child = {}
     data_child["name"] = "Accelerometer (X)"
@@ -437,4 +437,4 @@ async def set_led_color(
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
