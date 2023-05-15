@@ -46,8 +46,7 @@ const chart = new Chart(ctx, {
             legend: {
                 labels: {
                     font: {
-                        size: 14,
-                        family: 'Arial'
+                        size: 16,
                     },
                     color: '#F2F2F2',
                     usePointStyle: true
@@ -64,7 +63,6 @@ const chart = new Chart(ctx, {
                 ticks: {
                     font: {
                         size: 14,
-                        family: 'Arial'
                     },
                     color: '#9E9E9E'
                 }
@@ -76,7 +74,6 @@ const chart = new Chart(ctx, {
                 ticks: {
                     font: {
                         size: 14,
-                        family: 'Arial'
                     },
                     color: '#9E9E9E'
                 }
@@ -204,7 +201,7 @@ function updateSensorsData() {
                 const valueCell = row.insertCell();
                 const unitCell = row.insertCell();
                 nameCell.innerText = data[key].name || key;
-                valueCell.innerText = data[key].value || "0";
+                valueCell.innerText = Math.round(data[key].value * 100) / 100 || "0";
                 unitCell.innerText = data[key].unit || "-";
             }
         })

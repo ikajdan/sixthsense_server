@@ -220,83 +220,82 @@ async def get_all_sensors(
             data_child["unit"] = ""
             data["yaw"] = data_child
 
-    # Commented out because it's not working on the emulator
-    # data_child = {}
-    # data_child["name"] = "Compass"
-    # data_child["value"] = hat.get_compass()
-    # data_child["unit"] = "°"
-    # data["compass"] = data_child
+    data_child = {}
+    data_child["name"] = "Compass"
+    data_child["value"] = hat.get_compass()
+    data_child["unit"] = "°"
+    data["compass"] = data_child
 
     data_child = {}
     data_child["name"] = "Accelerometer (X)"
     data_child["value"] = hat.get_accelerometer_raw()["x"] * 9.80665
-    data_child["unit"] = "m/s²"
+    data_child["unit"] = " m/s²"
     data["accelerometer_x"] = data_child
 
     data_child = {}
     data_child["name"] = "Accelerometer (Y)"
     data_child["value"] = hat.get_accelerometer_raw()["y"] * 9.80665
-    data_child["unit"] = "m/s²"
+    data_child["unit"] = " m/s²"
     data["accelerometer_y"] = data_child
 
     data_child = {}
     data_child["name"] = "Accelerometer (Z)"
     data_child["value"] = hat.get_accelerometer_raw()["z"] * 9.80665
-    data_child["unit"] = "m/s²"
+    data_child["unit"] = " m/s²"
     data["accelerometer_z"] = data_child
 
     data_child = {}
     data_child["name"] = "Gyroscope (X)"
     data_child["value"] = hat.get_gyroscope_raw()["x"]
-    data_child["unit"] = "rad/s"
+    data_child["unit"] = " rad/s"
     data["gyroscope_x"] = data_child
 
     data_child = {}
     data_child["name"] = "Gyroscope (Y)"
     data_child["value"] = hat.get_gyroscope_raw()["y"]
-    data_child["unit"] = "rad/s"
+    data_child["unit"] = " rad/s"
     data["gyroscope_y"] = data_child
 
     data_child = {}
     data_child["name"] = "Gyroscope (Z)"
     data_child["value"] = hat.get_gyroscope_raw()["z"]
-    data_child["unit"] = "rad/s"
+    data_child["unit"] = " rad/s"
     data["gyroscope_z"] = data_child
 
     data_child = {}
     data_child["name"] = "Magnetometer (X)"
     data_child["value"] = hat.get_compass_raw()["x"]
-    data_child["unit"] = "μT"
+    data_child["unit"] = " μT"
     data["magnetometer_x"] = data_child
 
     data_child = {}
     data_child["name"] = "Magnetometer (Y)"
     data_child["value"] = hat.get_compass_raw()["y"]
-    data_child["unit"] = "μT"
+    data_child["unit"] = " μT"
     data["magnetometer_y"] = data_child
 
     data_child = {}
     data_child["name"] = "Magnetometer (Z)"
     data_child["value"] = hat.get_compass_raw()["z"]
-    data_child["unit"] = "μT"
+    data_child["unit"] = " μT"
     data["magnetometer_z"] = data_child
 
     data_child = {}
     data_child["name"] = "Joystick (H)"
     data_child["value"] = joy_h_count
-    data_child["unit"] = "-"
+    data_child["unit"] = ""
     data["joystick_x"] = data_child
 
     data_child = {}
     data_child["name"] = "Joystick (V)"
     data_child["value"] = joy_v_count
-    data_child["unit"] = "-"
+    data_child["unit"] = ""
     data["joystick_y"] = data_child
 
     data_child = {}
     data_child["name"] = "Joystick (C)"
     data_child["value"] = joy_c_count
-    data_child["unit"] = "-"
+    data_child["unit"] = ""
     data["joystick_c"] = data_child
 
     return data
