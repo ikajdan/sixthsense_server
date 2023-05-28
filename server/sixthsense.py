@@ -450,4 +450,4 @@ if __name__ == "__main__":
         "workers": 16,
         "worker_class": "uvicorn.workers.UvicornWorker",
     }
-    StandaloneApplication("main:app", options).run()
+    StandaloneApplication("sixthsense:app", options).run()

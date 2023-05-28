@@ -1,10 +1,9 @@
 [Unit]
 Description=Sense HAT API server
+After=network.target
 
 [Service]
-Type=oneshot
-ExecStart=/usr/bin/main.py
+ExecStart=/opt/sixthsense.py
 
 [Install]
 WantedBy=multi-user.target
-
