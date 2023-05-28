@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 from typing import Annotated
-import uvicorn
 from enum import Enum
-from pydantic import Field
-from sense_emu import SenseHat, ACTION_PRESSED, ACTION_HELD, ACTION_RELEASED
 from fastapi import FastAPI, Path
+from sense_emu import SenseHat, ACTION_RELEASED
+from gunicorn.app.wsgiapp import WSGIApplication
 
-hat = SenseHat()
 app = FastAPI()
+hat = SenseHat()
 
 joy_h_count = 0
 joy_v_count = 0
@@ -61,15 +60,6 @@ hat.stick.direction_down = joy_pushed_down
 hat.stick.direction_left = joy_pushed_left
 hat.stick.direction_right = joy_pushed_right
 hat.stick.direction_middle = joy_pushed_middle
-
-
-class Sensors(str, Enum):
-    temperature = "temperature"
-    pressure = "pressure"
-    humidity = "humidity"
-    roll = "roll"
-    pitch = "pitch"
-    yaw = "yaw"
 
 
 class Units:
@@ -438,5 +428,26 @@ async def set_led_color(
     return hat.set_pixel(x, y, r, g, b)
 
 
+class StandaloneApplication(WSGIApplication):
+    def __init__(self, app_uri, options=None):
+        self.options = options or {}
+        self.app_uri = app_uri
+        super().__init__()
+
+    def load_config(self):
+        config = {
+            key: value
+            for key, value in self.options.items()
+            if key in self.cfg.settings and value is not None
+        }
+        for key, value in config.items():
+            self.cfg.set(key.lower(), value)
+
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    options = {
+        "bind": "0.0.0.0:8000",
+        "workers": 16,
+        "worker_class": "uvicorn.workers.UvicornWorker",
+    }
+    StandaloneApplication("main:app", options).run()
