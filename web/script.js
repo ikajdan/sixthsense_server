@@ -176,7 +176,7 @@ function rgbToHex(r, g, b) {
 }
 
 function updateSensorsData() {
-    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all?t=c&p=hpa&h=perc&ro=deg&pi=deg&ya=deg";
+    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all";
     const sensorsContainer = document.getElementById("sensorsTable");
 
     fetch(apiEndpoint)
@@ -209,7 +209,7 @@ function updateSensorsData() {
 }
 
 function updateSensorsPlot() {
-    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all?t=c&p=hpa&h=perc";
+    const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all";
 
     fetch(apiEndpoint)
         .then(response => response.json())

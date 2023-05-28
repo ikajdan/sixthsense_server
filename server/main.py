@@ -6,21 +6,9 @@ from enum import Enum
 from pydantic import Field
 from sense_emu import SenseHat, ACTION_PRESSED, ACTION_HELD, ACTION_RELEASED
 from fastapi import FastAPI, Path
-from fastapi.middleware.cors import CORSMiddleware
-
 
 hat = SenseHat()
 app = FastAPI()
-
-# TODO: Dev only
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 
 joy_h_count = 0
 joy_v_count = 0
@@ -111,12 +99,12 @@ async def root():
 
 @app.get("/sensors/all")
 async def get_all_sensors(
-    t: str | None = None,
-    p: str | None = None,
-    h: str | None = None,
-    ro: str | None = None,
-    pi: str | None = None,
-    ya: str | None = None,
+    t: str | None = "c",
+    p: str | None = "hpa",
+    h: str | None = "perc",
+    ro: str | None = "deg",
+    pi: str | None = "deg",
+    ya: str | None = "deg",
 ):
     data = {}
     match t:
@@ -311,6 +299,21 @@ async def get_temperature(u: Units.Temperature | None = None):
         data["unit"] = " F"
     else:
         data["value"] = hat.temperature
+        data["unit"] = " °C"
+
+    return data
+
+
+@app.get("/sensors/temperature_from_pressure")
+async def get_temperature_from_pressure(u: Units.Temperature | None = None):
+    data = {}
+    data["name"] = "Temperature"
+
+    if u == Units.Temperature.fahrenheit:
+        data["value"] = hat.get_temperature_from_pressure * 9 / 5 + 32
+        data["unit"] = " F"
+    else:
+        data["value"] = hat.get_temperature_from_pressure
         data["unit"] = " °C"
 
     return data
