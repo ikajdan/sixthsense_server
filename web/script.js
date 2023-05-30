@@ -82,11 +82,17 @@ const chart = new Chart(ctx, {
     }
 });
 
+/**
+ * @brief Updates all data and plots for sensors.
+ */
 function updateAll() {
     updateSensorsData();
     updateSensorsPlot();
 }
 
+/**
+ * @brief Starts the timer to periodically call the updateAll function.
+ */
 function startTimer() {
     if (intervalId) {
         clearInterval(intervalId);
@@ -95,6 +101,9 @@ function startTimer() {
     intervalId = setInterval(updateAll, refreshTimePref);
 }
 
+/**
+ * @brief Creates links for spans with data-href attribute and sets up their click event.
+ */
 function createLinks() {
     var s = document.querySelectorAll("span[data-href]");
     for (var i = 0; i < s.length; i++) {
@@ -106,6 +115,9 @@ function createLinks() {
     }
 }
 
+/**
+ * @brief Sets up the logic for the sidebar navigation.
+ */
 function setupSidebarLogic() {
     const sidebarLinks = document.querySelectorAll(".sidebar-link");
     const pages = document.querySelectorAll(".page");
@@ -138,6 +150,9 @@ function setupSidebarLogic() {
     });
 }
 
+/**
+ * @brief Saves the settings entered by the user.
+ */
 function saveSettings() {
     const hostName = document.getElementById("settingsHostName");
     localStorage.setItem("hostName", hostName.value);
@@ -154,6 +169,9 @@ function saveSettings() {
     startTimer();
 }
 
+/**
+ * @brief Restores the previously saved settings.
+ */
 function restoreSettings() {
     const hostName = document.getElementById("settingsHostName");
     if (hostNamePref) {
@@ -171,10 +189,20 @@ function restoreSettings() {
     }
 }
 
+/**
+ * @brief Converts RGB values to a hexadecimal color code.
+ * @param r The red component (0-255).
+ * @param g The green component (0-255).
+ * @param b The blue component (0-255).
+ * @return The hexadecimal color code.
+ */
 function rgbToHex(r, g, b) {
     return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
 }
 
+/**
+ * @brief Updates the sensor data table.
+ */
 function updateSensorsData() {
     const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all";
     const sensorsContainer = document.getElementById("sensorsTable");
@@ -208,6 +236,9 @@ function updateSensorsData() {
         .catch(error => console.log(error));
 }
 
+/**
+ * @brief Updates the sensors plot with new data.
+ */
 function updateSensorsPlot() {
     const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/sensors/all";
 
@@ -232,6 +263,9 @@ function updateSensorsPlot() {
         .catch(error => console.error(error));
 }
 
+/**
+ * @brief Updates the LED grid based on the server data.
+ */
 function updateLedGrid() {
     const apiEndpoint = "http://" + hostNamePref + ":" + portNumberPref + "/leds/get/all";
 
@@ -261,6 +295,9 @@ function updateLedGrid() {
         .catch(error => console.error(error));
 }
 
+/**
+ * @brief Sets the LED colors on the server.
+ */
 function setLedGrid() {
     let colors = [];
     const colorInputs = document.querySelectorAll('input[type="color"]');
@@ -292,6 +329,9 @@ function setLedGrid() {
     });
 }
 
+/**
+ * @brief Resets the LED grid to all off state.
+ */
 function resetLedGrid() {
     let colors = [];
     const colorInputs = document.querySelectorAll('input[type="color"]');

@@ -15,6 +15,15 @@ joy_c_count = 0
 
 
 def led_to_pos(led):
+    """
+    Converts the linear LED index to x and y coordinates.
+
+    Args:
+        led (int): The linear index of the LED.
+
+    Returns:
+        list: A list containing the x and y coordinates.
+    """
     ROW_SIZE = 8
     x = led % ROW_SIZE
     y = led // ROW_SIZE
@@ -22,34 +31,73 @@ def led_to_pos(led):
 
 
 def hex_to_rgb(hex):
+    """
+    Converts a hex color code to RGB values.
+
+    Args:
+        hex (str): The hex color code.
+
+    Returns:
+        tuple: A tuple containing the red, green, and blue values.
+    """
     return tuple(int(hex[i : i + 2], 16) for i in (0, 2, 4))
 
 
 def joy_pushed_up(event):
+    """
+    Callback function for when the joystick is pushed up.
+
+    Args:
+        event: The joystick event.
+    """
     if event.action != ACTION_RELEASED:
         global joy_v_count
         joy_v_count = joy_v_count + 1
 
 
 def joy_pushed_down(event):
+    """
+    Callback function for when the joystick is pushed down.
+
+    Args:
+        event: The joystick event.
+    """
     if event.action != ACTION_RELEASED:
         global joy_v_count
         joy_v_count = joy_v_count - 1
 
 
 def joy_pushed_left(event):
+    """
+    Callback function for when the joystick is pushed left.
+
+    Args:
+        event: The joystick event.
+    """
     if event.action != ACTION_RELEASED:
         global joy_h_count
         joy_h_count = joy_h_count - 1
 
 
 def joy_pushed_right(event):
+    """
+    Callback function for when the joystick is pushed right.
+
+    Args:
+        event: The joystick event.
+    """
     if event.action != ACTION_RELEASED:
         global joy_h_count
         joy_h_count = joy_h_count + 1
 
 
 def joy_pushed_middle(event):
+    """
+    Callback function for when the joystick is pushed in the middle.
+
+    Args:
+        event: The joystick event.
+    """
     if event.action != ACTION_RELEASED:
         global joy_c_count
         joy_c_count = joy_c_count + 1
@@ -429,12 +477,28 @@ async def set_led_color(
 
 
 class StandaloneApplication(WSGIApplication):
+    """
+    A class representing a standalone application.
+
+    It inherits from WSGIApplication.
+    """
+
     def __init__(self, app_uri, options=None):
+        """
+        Initialize the StandaloneApplication.
+
+        Args:
+            app_uri (str): The URI of the application.
+            options (dict, optional): Additional options for the application. Defaults to None.
+        """
         self.options = options or {}
         self.app_uri = app_uri
         super().__init__()
 
     def load_config(self):
+        """
+        Load the configuration for the application.
+        """
         config = {
             key: value
             for key, value in self.options.items()
