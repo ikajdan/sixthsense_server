@@ -163,8 +163,8 @@ function saveSettings() {
     portNumberPref = portNumber.value || "8000";
 
     const refreshTime = document.getElementById("settingsRefreshTime");
-    localStorage.getItem("activePage")
-    refreshTimePref = refreshTime.value || 1000;
+    localStorage.setItem("refreshTime", refreshTime.value);
+    refreshTimePref = refreshTime.value || "1000";
 
     startTimer();
 }
